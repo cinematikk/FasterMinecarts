@@ -70,6 +70,22 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 			
 			return multiplier;
 		}
-		
+	
+	public void processConfigFile() {
+			 
+	final Map<String, Object> defParams = new HashMap<String, Object>();
+	  this.getConfig().options().copyDefaults(true);
+			     
+	  // This is the default configuration
+	defParams.put("SpeedMultiplier", "1");
+			 
+	// If config does not include a default parameter, add it
+	for (final Entry<String, Object> e : defParams.entrySet())
+		if (!this.getConfig().contains(e.getKey())){
+			this.getConfig().set(e.getKey(), e.getValue());
+			}
+			
+	this.saveConfig();
+	}	
 	
 }
