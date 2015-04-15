@@ -31,7 +31,14 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 					
 					try{
 						
-						// Save input in config
+						if(sender.hasPermission("FasterMinecarts.cartspeed")){
+							
+							this.reloadConfig();
+							this.getConfig().set("SpeedMultiplier", args[0]);
+							this.saveConfig();
+							sender.sendMessage(ChatColor.AQUA + "[FasterMinecarts] Successfully changed minecartspeed multiplier to " + args[0]);
+							
+						}
 						
 					}
 					catch(Exception ex){
