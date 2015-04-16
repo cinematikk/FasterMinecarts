@@ -1,8 +1,14 @@
 package me.cinematikk.fm;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,10 +21,13 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 		
 		public void onEnable() {
 			this.getServer().getPluginManager().registerEvents(this, this);
+			this.saveConfig();
+			processConfigFile();
 			System.out.println("[FasterMinecarts] has been enabled.");
 		}
 
 		public void onDisable() {
+			this.saveConfig();
 			System.out.println("[FasterMinecarts] has been disabled.");
 		}
 
@@ -32,9 +41,9 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 					try{
 						
 						if(sender.hasPermission("FasterMinecarts.cartspeed")){
-							
+							double multi = Double.parseDouble(args[0]);
 							this.reloadConfig();
-							this.getConfig().set("SpeedMultiplier", args[0]);
+							this.getConfig().set("SpeedMultiplier", multi);
 							this.saveConfig();
 							sender.sendMessage(ChatColor.AQUA + "[FasterMinecarts] Successfully changed minecartspeed multiplier to " + args[0]);
 							
@@ -48,7 +57,41 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 					}
 					
 				}
-			}		
+				
+			}
+			
+			if(cmd.getName().equalsIgnoreCase("applyall")){
+				
+				if(args.length == 1){
+					
+					if(args[0] == "cartspeed"){
+						
+						if(sender.hasPermission("FasterMinecarts.applyall")){
+							sender.sendMessage(ChatColor.AQUA + "[FasterMinecarts] This may take awhile!");
+							Player p = (Player) sender;
+							double multiplier = getSpeedMultiplier();
+							for(Entity v: p.getWorld().getEntities()){   // You need to be a player for this!
+								
+								if(v instanceof Vehicle){
+									
+									if(v instanceof Minecart){
+										
+										((Minecart) v).setMaxSpeed(multiplier);
+										
+									}
+									
+								}
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+			}
+			
 			return false;
 		}
 	
@@ -62,30 +105,30 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 			
 		}
 
-		private double getSpeedMultiplier() {
-			
-			double multiplier = 0;
-			
-			// Import speedmultiplier from config
-			
+		public double getSpeedMultiplier() {
+			double multiplier = this.getConfig().getDouble("SpeedMultiplier");
 			return multiplier;
 		}
-	
-	public void processConfigFile() {
+		
+		
+		private void processConfigFile() {
 			 
-	final Map<String, Object> defParams = new HashMap<String, Object>();
-	  this.getConfig().options().copyDefaults(true);
-			     
-	  // This is the default configuration
-	defParams.put("SpeedMultiplier", "1");
+			  final Map<String, Object> defParams = new HashMap<String, Object>();
+			  this.getConfig().options().copyDefaults(true);
+			  String x = "1";
+			  double multi = Double.parseDouble(x);
+			  
+			  // This is the default configuration
+			  defParams.put("SpeedMultiplier", multi);
 			 
-	// If config does not include a default parameter, add it
-	for (final Entry<String, Object> e : defParams.entrySet())
-		if (!this.getConfig().contains(e.getKey())){
-			this.getConfig().set(e.getKey(), e.getValue());
+			  // If config does not include a default parameter, add it
+			  for (final Entry<String, Object> e : defParams.entrySet())
+			    if (!this.getConfig().contains(e.getKey())){
+			    	this.getConfig().set(e.getKey(), e.getValue());
+			    }
+			  // Save default values to config.yml in datadirectory
+			  this.saveConfig();
 			}
-			
-	this.saveConfig();
-	}	
+		
 	
 }
