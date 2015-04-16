@@ -1,2 +1,26 @@
-currently working on it
-~ckk
+name: FasterMinecarts
+version: 0.1
+author: cinematikk
+description: Turn up the speed of your minecarts
+
+main: me.cinematikk.fm.FasterMinecarts
+
+permissions:
+  FasterMinecarts.*:
+    description: Gives access to all FM commands
+    children:
+      - FasterMinecarts.cartspeed: true
+      - FasterMinecarts.applyall: true
+  FasterMinecarts.cartspeed:
+    description: Gives access to the "/cartspeed" command
+    default: op
+  FasterMinecarts.applyall:
+    description: Gives access to "/applyall cartspeed" command
+    default: op
+
+commands:
+  cartspeed:
+    description: Change the speed of minecarts
+    aliases: cs
+  applyall:
+    description: Use "/applyall cartspeed" to apply given cartspeed to all carts in your world
