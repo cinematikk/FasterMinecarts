@@ -41,10 +41,7 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 					try{
 						
 						if(sender.hasPermission("FasterMinecarts.cartspeed")){
-							double multi = Double.parseDouble(args[0]);
-							this.reloadConfig();
-							this.getConfig().set("SpeedMultiplier", multi);
-							this.saveConfig();
+							setMultiplier(args[0]);
 							sender.sendMessage(ChatColor.AQUA + "[FasterMinecarts] Successfully changed minecartspeed multiplier to " + args[0]);
 							
 						}
@@ -69,20 +66,7 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 						if(sender.hasPermission("FasterMinecarts.applyall")){
 							sender.sendMessage(ChatColor.AQUA + "[FasterMinecarts] This may take awhile!");
 							Player p = (Player) sender;
-							double multiplier = getSpeedMultiplier();
-							for(Entity v: p.getWorld().getEntities()){   // You need to be a player for this!
-								
-								if(v instanceof Vehicle){
-									
-									if(v instanceof Minecart){
-										
-										((Minecart) v).setMaxSpeed(multiplier);
-										
-									}
-									
-								}
-								
-							}
+							changeAllMinecarts(p);
 							
 						}
 						
@@ -129,6 +113,34 @@ public class FasterMinecarts extends JavaPlugin implements Listener {
 			  // Save default values to config.yml in datadirectory
 			  this.saveConfig();
 			}
+			
+		public void setMultiplier(String multiplier) {
+			
+			double multi = Double.parseDouble(multiplier);
+			this.reloadConfig();
+			this.getConfig().set("SpeedMultiplier", multi);
+			this.saveConfig();
+			
+		}
+		
+		public void changeAllMinecarts(Player player) {
+			
+			double multiplier = getSpeedMultiplier();
+			for(Entity v: player.getWorld().getEntities()){   // You need to be a player for this!
+				
+				if(v instanceof Vehicle){
+					
+					if(v instanceof Minecart){
+						
+						((Minecart) v).setMaxSpeed(multiplier);
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 		
 	
 }
